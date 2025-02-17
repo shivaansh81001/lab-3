@@ -1,1 +1,1 @@
-# lab-3
+# Bayer-Filter-Dithering-and-Geometric-Operations
