@@ -32,15 +32,22 @@ def part1():
     # reconstruction of the IG channel IG
     IG = np.copy(img) # copy the image into each channel
 
+    print(img)
+    
     for row in range(0,h,4): # loop step is 4 since our mask size is 4.
         for col in range(0,w,4): # loop step is 4 since our mask size is 4.
             # TODO: compute pixel value for each location where mask is unshaded (0)
             # interpolate each pixel using its every valid (shaded) neighbour
             IG[row,col+1]= (int(img[row,col])+int(img[row,col+2])+int(img[row+1,col+1]))/3  # B (recommendation: add this kinf of inline comments to each line within for loop)
-            # ...
+            IG[row,col+3] = (int(img[row,col+2]) + int(img[row+1,col+2]))/2         #D
+            IG[row+1,col] = (int(img[row,col]) + int(img[row+1,col+1]) + int(img[row+2,col]))/3       #E
+            IG[row+1,col+2] = (int(img[row,col+2]) + int(img[row+1,col+1]) + int(img[row+1,col+3]) + int(img[row+2,col+2]))/4       #G
+            IG[row+2,col+1] = (int(img[row+2,col]) + int(img[row+2,col+2]) + int(img[row+1,col+1]) + int(img[row+1,col+3]))/4         #J
+            IG[row+2,col+3] = (int(img[row+2,col+2]) + int(img[row+1,col+3]) + int(img[row+3,col+3]))/3       #L
             IG[row+3,col]= (int(img[row+2,col])+int(img[row+3,col+1]))/2                    # M
+            IG[row+3,col+2]= (int(img[row+3,col+1])+int(img[row+2,col+2])+int(img[row+3,col+3]))/3      #O
             # ...
-
+    print(IG)
     # TODO: reconstruction of the red channel IR (similar to loops above),
     # TODO: reconstruction of the blue channel IB (similar to loops above),
 
