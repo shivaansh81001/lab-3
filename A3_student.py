@@ -31,8 +31,10 @@ def part1():
 
     # reconstruction of the IG channel IG
     IG = np.copy(img) # copy the image into each channel
+    IR = np.copy(img)
+    IB = np.copy(img)
 
-    print(img)
+    #print(img)
     
     for row in range(0,h,4): # loop step is 4 since our mask size is 4.
         for col in range(0,w,4): # loop step is 4 since our mask size is 4.
@@ -46,11 +48,25 @@ def part1():
             IG[row+2,col+3] = (int(img[row+2,col+2]) + int(img[row+1,col+3]) + int(img[row+3,col+3]))/3       #L
             IG[row+3,col]= (int(img[row+2,col])+int(img[row+3,col+1]))/2                    # M
             IG[row+3,col+2]= (int(img[row+3,col+1])+int(img[row+2,col+2])+int(img[row+3,col+3]))/3      #O
-            # ...
-    print(IG)
-    # TODO: reconstruction of the red channel IR (similar to loops above),
-    # TODO: reconstruction of the blue channel IB (similar to loops above),
+            
+            #print(IG)
+            # TODO: reconstruction of the red channel IR (similar to loops above),
 
+            IR[row,col] = img[row,col+1]        #A
+            IR[row,col+2] = (int(img[row,col+1]) + int(img[row,col+3]))/2       #C
+            IR[row+1,col+1] = (int(img[row,col+1] + int(img[row+2,col+1])))/2       #F
+            IR[row+1,col] = IR[row+1,col+1]         #E
+            IR[row+1,col+2] = (int(img[row,col+1]) + int(img[row,col+3]) + int(img[row+2,col+1]) + int(img[row+2,col+3]))/4         #G
+            IR[row,col] = (int(img[row,col+3]) + int(img[row+2,col+3]))/2       #H
+            IR[row+2,col+2] = (int(img[row+2,col+1]) + int(img[row+2,col+3]))/2
+            IR[row+2,col],IR[row+3,col],IR[row+3,col+1] = img[row+2,col+1],img[row+2,col+1],img[row+2,col+1]        #I,M,N
+            IR[row+3,col+2] = IR[row+2,col+2]       #O
+            IR[row+3,col+3] = img[row+2,col+3]
+
+
+            # TODO: reconstruction of the blue channel IB (similar to loops above),
+            
+    print(IR)
     # TODO: merge the three channels IG, IB, IR in the correct order
     rgb[:,:,1]=IG
     #...
