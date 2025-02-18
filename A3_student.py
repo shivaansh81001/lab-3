@@ -34,14 +34,14 @@ def part1():
     IR = np.copy(img)
     IB = np.copy(img)
 
-    #print(img)
+    print("original ",img[:4])
     
     for row in range(0,h,4): # loop step is 4 since our mask size is 4.
         for col in range(0,w,4): # loop step is 4 since our mask size is 4.
             # TODO: compute pixel value for each location where mask is unshaded (0)
             # interpolate each pixel using its every valid (shaded) neighbour
             IG[row,col+1]= (int(img[row,col])+int(img[row,col+2])+int(img[row+1,col+1]))/3  # B (recommendation: add this kinf of inline comments to each line within for loop)
-            IG[row,col+3] = (int(img[row,col+2]) + int(img[row+1,col+2]))/2         #D
+            IG[row,col+3] = (int(img[row,col+2]) + int(img[row+1,col+3]))/2         #D
             IG[row+1,col] = (int(img[row,col]) + int(img[row+1,col+1]) + int(img[row+2,col]))/3       #E
             IG[row+1,col+2] = (int(img[row,col+2]) + int(img[row+1,col+1]) + int(img[row+1,col+3]) + int(img[row+2,col+2]))/4       #G
             IG[row+2,col+1] = (int(img[row+2,col]) + int(img[row+2,col+2]) + int(img[row+1,col+1]) + int(img[row+1,col+3]))/4         #J
@@ -54,21 +54,36 @@ def part1():
 
             IR[row,col] = img[row,col+1]        #A
             IR[row,col+2] = (int(img[row,col+1]) + int(img[row,col+3]))/2       #C
-            IR[row+1,col+1] = (int(img[row,col+1] + int(img[row+2,col+1])))/2       #F
+            IR[row+1,col+1] = (int(img[row,col+1]) + int(img[row+2,col+1]))/2       #F
             IR[row+1,col] = IR[row+1,col+1]         #E
             IR[row+1,col+2] = (int(img[row,col+1]) + int(img[row,col+3]) + int(img[row+2,col+1]) + int(img[row+2,col+3]))/4         #G
-            IR[row,col] = (int(img[row,col+3]) + int(img[row+2,col+3]))/2       #H
+            IR[row+1,col+3] = (int(img[row,col+3]) + int(img[row+2,col+3]))/2       #H
             IR[row+2,col+2] = (int(img[row+2,col+1]) + int(img[row+2,col+3]))/2
             IR[row+2,col],IR[row+3,col],IR[row+3,col+1] = img[row+2,col+1],img[row+2,col+1],img[row+2,col+1]        #I,M,N
             IR[row+3,col+2] = IR[row+2,col+2]       #O
-            IR[row+3,col+3] = img[row+2,col+3]
+            IR[row+3,col+3] = img[row+2,col+3]      #P
 
 
             # TODO: reconstruction of the blue channel IB (similar to loops above),
             
-    print(IR)
+            IB[row+1,col+1] = (int(img[row+1,col]) + int(img[row+1,col+2]))/2       #F
+            IB[row+2,col] = (int(img[row+1,col]) + int(img[row+3,col]))/2       #I
+            IB[row+2,col+2] = (int(img[row+1,col+2]) + int(img[row+3,col+2]))/2         #K
+            IB[row+3,col+1] = (int(img[row+3,col]) + int(img[row+3,col+2]))/2       #N
+            IB[row+2,col+1] = (int(img[row+1,col]) + int(img[row+3,col]) + int(img[row+1,col+2]) + int(img[row+3,col+2]))/4
+            IB[row,col] = img[row+1,col]        #A
+            IB[row,col+1] = IB[row+1,col+1]         #B
+            IB[row,col+2],IB[row,col+3],IB[row+1,col+3] = img[row+1,col+2],img[row+1,col+2],img[row+1,col+2]        #C,D,H
+            IB[row+2,col+3] = IB[row+2,col+2]       #L
+            IB[row+3,col+3] = img[row+3,col+2]      #P
+
+    print("green",IG[:4][:4])
+    print("red",IR[:4][:4])
+    print("blue",IB[:4][:4])
     # TODO: merge the three channels IG, IB, IR in the correct order
     rgb[:,:,1]=IG
+    rgb[:,:,0]=IR
+    rgb[:,:,2]=IB
     #...
 
     # plotting code
@@ -398,9 +413,11 @@ if __name__ == "__main__":
     # You can comment those lines to run only part of the code you are working on but remember to uncomment before submission
     print("***************Output for part 1:")
     part1()
+    '''
     print("***************Output for part 2:")
     part2()
     print("***************Output for part 3:")
     part3()
     print("***************Output for part 4:")
     part4()
+'''
