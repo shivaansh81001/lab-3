@@ -119,8 +119,9 @@ def part2():
         print(image.shape)
         (h,w,c)=image.shape
         k_means = KMeans(n_clusters=nColours).fit(image.reshape(h*w,c))     #referenve - https://hackernoon.com/learn-k-means-clustering-by-quantizing-color-images-in-python
-        colours= k_means.cluster_centers_
-        print(colours)
+        colours= (k_means.cluster_centers_)*256
+        #print(colours)
+        #print(img_as_float([colours.astype(np.ubyte)])[0])
         return makePalette(colours)
 
 
@@ -152,22 +153,25 @@ def part2():
 
         #print(image,image.shape)
 
-        total_abs_error = [0,0,0]   #RGB
+        total_abs_error = 0   #RGB
         height, width =image.shape[0],image.shape[1]
 
-        for ch in range(3):
-            for x in range(1,height-1):
-                for y in range(1,width-1):
-                    old = image[x,y,ch]
-                    new = nearest(palette, old)
-                    image[x,y,ch] = new
-                    quant_err = old - new   
-                    total_abs_error[ch]+= abs(quant_err)
+    
+        for x in range(1,height-1):
+            for y in range(1,width-1):
+                old = image[x,y,:]
+                print(old)
+                new = nearest(palette, old)
+                print(new)
+                image[x,y,:] = new
+                quant_err = old - new   
+                #print(quant_err)
+                total_abs_error += abs(quant_err)
 
-                    image[x+1,y,ch] = image[x+1,y,ch] + (quant_err * (11/26))
-                    image[x-1,y+1,ch] = image[x-1,y+1,ch] + (quant_err * (5/26))
-                    image[x,y+1,ch] = image[x,y+1,ch] + (quant_err * (7/26))
-                    image[x+1,y+1,ch] = image[x+1,y+1,ch] + (quant_err * (3/26))
+                image[x+1,y:ch] = image[x+1,y:ch] + (quant_err * (11/26))
+                image[x-1,y+1:ch] = image[x-1,y+1:ch] + (quant_err * (5/26))
+                image[x,y+1:ch] = image[x,y+1:ch] + (quant_err * (7/26))
+                image[x+1,y+1:ch] = image[x+1,y+1:ch] + (quant_err * (3/26))
 
         avg_abs_error =(np.array(total_abs_error)/image.size)
         return image
@@ -189,10 +193,11 @@ def part2():
     # Dynamically generate an N colour palette for the given image
     palette = findPalette(image, nColours)
     colours = palette.data
+    print("colors= ",colours.shape)
     colours = img_as_float([colours.astype(np.ubyte)])[0]
-    #print(colours)
+    print(colours)
 
-    img = ModifiedFloydSteinbergDitherColor(image, palette)
+    #img = ModifiedFloydSteinbergDitherColor(image, palette)
 
     plt.figure(figsize=(10,5))
     plt.subplot(121),plt.imshow(orig),plt.title('Original Image')
