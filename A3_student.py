@@ -119,7 +119,7 @@ def part2():
         print(image.shape)
         (h,w,c)=image.shape
         k_means = KMeans(n_clusters=nColours,max_iter=200).fit(image.reshape(h*w,c))     #referenve - https://hackernoon.com/learn-k-means-clustering-by-quantizing-color-images-in-python
-        colours= (k_means.cluster_centers_)*256.0
+        colours= (k_means.cluster_centers_)
         #print(img_as_float([colours.astype(np.ubyte)])[0])
         return makePalette(colours)
 
@@ -151,20 +151,20 @@ def part2():
         # TODO: implement agorithm for RGB image (hint: you need to handle error in each channel separately)
 
         #print(image,image.shape)
-        image = image*255
+        
         total_abs_error = 0   #RGB
         height, width =image.shape[0],image.shape[1]
 
         
         for y in range(1,height-1):
             for x in range(1,width-1):
-                old = image[x,y]
+                old = image[x,y].copy()
                 #print(old)
                 new = nearest(palette, old)
                 #print(new)
                 image[x,y] = new
                 quant_err = old - new   
-                print(new, old, quant_err)
+                #print(new, old, quant_err)
                 total_abs_error += np.abs(quant_err)
 
                 image[x+1,y] = image[x+1,y] + (quant_err * (11/26))
@@ -172,7 +172,9 @@ def part2():
                 image[x,y+1] = image[x,y+1] + (quant_err * (7/26))
                 image[x+1,y+1] = image[x+1,y+1] + (quant_err * (3/26))
 
+        print(total_abs_error)
         avg_abs_error =(np.array(total_abs_error)/image.size)
+        print(avg_abs_error)
         return image
 
 
