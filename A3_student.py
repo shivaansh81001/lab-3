@@ -116,7 +116,7 @@ def part2():
     # Returns a kd-tree palette with those colours
     def findPalette(image, nColours):
         # TODO: perform KMeans clustering to get 'colours' --  the computed k means
-
+        colours = KMeans(n_clusters=nColours).fit(image)
         return makePalette(colours)
 
 
@@ -146,6 +146,10 @@ def part2():
 
         # TODO: implement agorithm for RGB image (hint: you need to handle error in each channel separately)
 
+        total_abs_error = [0,0,0]   #RGB
+        for ch in range(3):
+            pass
+
         return image
 
 
@@ -159,6 +163,8 @@ def part2():
 
     # Convert the image from 8bits per channel to floats in each channel for precision
     image = img_as_float(image)
+
+    #print(image)
 
     # Dynamically generate an N colour palette for the given image
     palette = findPalette(image, nColours)
@@ -411,13 +417,13 @@ def part4():
 
 if __name__ == "__main__":
     # You can comment those lines to run only part of the code you are working on but remember to uncomment before submission
-    print("***************Output for part 1:")
-    part1()
-    '''
+    #print("***************Output for part 1:")
+    #part1()
+    
     print("***************Output for part 2:")
     part2()
+    '''
     print("***************Output for part 3:")
     part3()
     print("***************Output for part 4:")
-    part4()
-'''
+    part4()'''
