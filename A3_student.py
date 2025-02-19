@@ -116,7 +116,11 @@ def part2():
     # Returns a kd-tree palette with those colours
     def findPalette(image, nColours):
         # TODO: perform KMeans clustering to get 'colours' --  the computed k means
-        colours = KMeans(n_clusters=nColours).fit(image)
+        print(image.shape)
+        (h,w,c)=image.shape
+        k_means = KMeans(n_clusters=nColours).fit(image.reshape(h*w,c))     #referenve - https://hackernoon.com/learn-k-means-clustering-by-quantizing-color-images-in-python
+        colours= k_means.cluster_centers_
+        print(colours)
         return makePalette(colours)
 
 
@@ -146,10 +150,26 @@ def part2():
 
         # TODO: implement agorithm for RGB image (hint: you need to handle error in each channel separately)
 
-        total_abs_error = [0,0,0]   #RGB
-        for ch in range(3):
-            pass
+        #print(image,image.shape)
 
+        total_abs_error = [0,0,0]   #RGB
+        height, width =image.shape[0],image.shape[1]
+
+        for ch in range(3):
+            for x in range(1,height-1):
+                for y in range(1,width-1):
+                    old = image[x,y,ch]
+                    new = nearest(palette, old)
+                    image[x,y,ch] = new
+                    quant_err = old - new   
+                    total_abs_error[ch]+= abs(quant_err)
+
+                    image[x+1,y,ch] = image[x+1,y,ch] + (quant_err * (11/26))
+                    image[x-1,y+1,ch] = image[x-1,y+1,ch] + (quant_err * (5/26))
+                    image[x,y+1,ch] = image[x,y+1,ch] + (quant_err * (7/26))
+                    image[x+1,y+1,ch] = image[x+1,y+1,ch] + (quant_err * (3/26))
+
+        avg_abs_error =(np.array(total_abs_error)/image.size)
         return image
 
 
@@ -170,6 +190,7 @@ def part2():
     palette = findPalette(image, nColours)
     colours = palette.data
     colours = img_as_float([colours.astype(np.ubyte)])[0]
+    #print(colours)
 
     img = ModifiedFloydSteinbergDitherColor(image, palette)
 
