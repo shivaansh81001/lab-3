@@ -253,8 +253,8 @@ def part3():
         
         #to save on computation in each loop, we can multiple both rotation and translation beforehand and then take the inverse
         # reference = https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/geometry/geo-tran.html#:~:text=A%20rotation%20matrix%20and%20a,rotations%20followed%20by%20a%20translation.
-        combined_Tr_trans = np.matmul(Tr, trans_mat)    
-        combined_inverses = np.matmul(trans_mat_inv, Tr_inv)
+        combined_Tr_trans = np.matmul(Tr, trans_mat_inv)    
+        combined_inverses = np.matmul(trans_mat, Tr_inv)
         
         
         out_img = np.zeros_like(image)
@@ -262,10 +262,12 @@ def part3():
             for out_x in range(w):
                 # TODO: find input pixel location from output pixel ocation and inverse transform matrix, copy over value from input location to output location
                 x_y_new = np.matmul(combined_Tr_trans, np.array([[out_x],[out_y],[1]]))
+                print("x_y_new = ",x_y_new)
                 out = np.matmul(combined_inverses, x_y_new)
+                print("out = ",out)
                 in_x, in_y = int(round(out[0, 0])), int(round(out[1, 0]))
-                print("x= ",in_x)
-                print("y= ",in_y)
+                #print("x= ",in_x)
+                #print("y= ",in_y)
                 out_img[out_y, out_x] = image[in_y, in_x]
                 
 
