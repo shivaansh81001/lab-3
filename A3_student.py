@@ -447,10 +447,10 @@ if __name__ == "__main__":
     #print("***************Output for part 1:")
     #part1()
     
-    print("***************Output for part 2:")
-    part2()
-    '''
+    #print("***************Output for part 2:")
+    #part2()
+
     print("***************Output for part 3:")
     part3()
-    print("***************Output for part 4:")
-    part4()'''
+    #print("***************Output for part 4:")
+    #part4()
