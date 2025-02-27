@@ -218,8 +218,19 @@ def part3():
         """
         return translation matrix that shifts center of image to the origin and its inverse
         """
-        trans_mat = None
-        trans_mat_inv = None
+        h = image.shape[0]//2
+        w = image.shape[1]//2
+        
+        print(h, w)
+        
+        trans_mat = np.array([[1,0,-w],
+                             [0,1,-h],
+                             [0,0,1]])
+        
+        
+        trans_mat_inv = np.linalg.inv(trans_mat)
+        
+        print(trans_mat_inv)
 
         # TODO: implement this function (overwrite the two lines above)
         # ...
@@ -233,8 +244,8 @@ def part3():
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
 
         # TODO: determine angle and create Tr
-        angle = ...
-        angle_rad = ...
+        angle = 75
+        angle_rad = np.radians(angle)
         Tr = np.array([])
 
         # TODO: compute inverse transformation to go from output to input pixel locations
@@ -447,10 +458,11 @@ if __name__ == "__main__":
     #print("***************Output for part 1:")
     #part1()
     
-    print("***************Output for part 2:")
-    part2()
-    '''
+    #print("***************Output for part 2:")
+    #part2()
+    
     print("***************Output for part 3:")
     part3()
+    '''
     print("***************Output for part 4:")
     part4()'''
