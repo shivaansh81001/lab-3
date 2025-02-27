@@ -221,7 +221,7 @@ def part3():
         h = image.shape[0]//2
         w = image.shape[1]//2
         
-        print(h, w)
+        #print(h, w)
         
         trans_mat = np.array([[1,0,-w],
                              [0,1,-h],
@@ -230,7 +230,7 @@ def part3():
         
         trans_mat_inv = np.linalg.inv(trans_mat)
         
-        print(trans_mat_inv)
+        #print(trans_mat_inv)
 
         # TODO: implement this function (overwrite the two lines above)
         # ...
@@ -243,19 +243,31 @@ def part3():
         h, w = image.shape[:2]
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
 
-        # TODO: determine angle and create Tr
         angle = 75
         angle_rad = np.radians(angle)
-        Tr = np.array([])
-
-        # TODO: compute inverse transformation to go from output to input pixel locations
-        Tr_inv = ...
-
+        Tr = np.array([[np.cos(angle_rad), -np.sin(angle_rad), 0],
+                       [np.sin(angle_rad), np.cos(angle_rad), 0],
+                       [0,0,1]])
+        
+        Tr_inv = np.linalg.inv(Tr)
+        
+        #to save on computation in each loop, we can multiple both rotation and translation beforehand and then take the inverse
+        # reference = https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/geometry/geo-tran.html#:~:text=A%20rotation%20matrix%20and%20a,rotations%20followed%20by%20a%20translation.
+        combined_Tr_trans = np.matmul(Tr, trans_mat)    
+        combined_inverses = np.matmul(trans_mat_inv, Tr_inv)
+        
+        
         out_img = np.zeros_like(image)
         for out_y in range(h):
             for out_x in range(w):
                 # TODO: find input pixel location from output pixel ocation and inverse transform matrix, copy over value from input location to output location
-                ...
+                x_y_new = np.matmul(combined_Tr_trans, np.array([[out_x],[out_y],[1]]))
+                out = np.matmul(combined_inverses, x_y_new)
+                in_x, in_y = int(round(out[0, 0])), int(round(out[1, 0]))
+                print("x= ",in_x)
+                print("y= ",in_y)
+                out_img[out_y, out_x] = image[in_y, in_x]
+                
 
         return out_img, Tr
 
