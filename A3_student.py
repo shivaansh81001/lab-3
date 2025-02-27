@@ -242,7 +242,6 @@ def part3():
         ''' rotate and return image '''
         h, w = image.shape[:2]
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
-
         angle = 75
         angle_rad = np.radians(angle)
         Tr = np.array([[np.cos(angle_rad), -np.sin(angle_rad), 0],
@@ -279,8 +278,29 @@ def part3():
     def scale_image(image):
         ''' scale image and return '''
         # TODO: implement this function, similar to above
+        h, w = image.shape[:2]
+        trans_mat, trans_mat_inv = calculate_trans_mat(image)
+        
         out_img = np.zeros_like(image)
-        Ts = np.array([])
+        
+        scale_x = 1.5
+        scale_y = 2.5
+        
+        Ts = np.array([[scale_x, 0, 0],
+                       [0, scale_y, 0],
+                       [0, 0, 1]])
+        
+        print(trans_mat, Ts, trans_mat_inv)
+        
+        combined = trans_mat_inv@Ts@trans_mat
+        
+        for out_y in range(int(h*scale_y)):
+            for out_x in range(int(w*scale_x)):
+                out =  combined@np.array([[out_x],[out_y],[1]])
+                in_x, in_y = int(round(out[0, 0])), int(round(out[1, 0]))
+                if 0 <= in_x < w and 0 <= in_y < h:
+                   out_img[out_y, out_x] = image[in_y, in_x]
+        
 
         return out_img, Ts
 
