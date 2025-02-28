@@ -380,10 +380,14 @@ def part3():
         out_img = np.zeros_like(image)
         warp_image,Tc = combined_warp(image)
         
-        Tc_inv = np.linalg.inv(Tc)[:, :2]
-        print(Tc_inv)
+        Tc_inv = np.linalg.inv(Tc)
+        #Tc_inv = np.array([Tc_inv for i in range(3)])
+        print(Tc)
         
-        out_img = warp(image,Tc_inv,order = 1)
+        similarity = SimilarityTransform(scale=(1.5,2.5), rotation=1.309, translation=(h//2,w//2))
+        print(similarity)
+        
+        out_img = warp(warp_image,inverse_map = similarity.inverse,order = 1)
         
         return out_img
 
