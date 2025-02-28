@@ -11,7 +11,7 @@ from skimage.transform import warp
 from skimage.transform import SimilarityTransform
 from skimage.color import rgb2gray
 from skimage.measure import ransac
-from skimage.transform import ProjectiveTransform
+from skimage.transform import ProjectiveTransform,warp
 #from skimage.feature import match_descriptors, ORB, plot_matches
 from skimage import feature
 
@@ -352,7 +352,7 @@ def part3():
         scale,Ts = scale_image(image)
         skew, Tskew = skew_image(image)
         
-        print(rotate.shape,scale.shape,skew.shape)
+        #print(rotate.shape,scale.shape,skew.shape)
         
         Tc = np.array(Ts@Tr@Tskew)
         
@@ -374,8 +374,17 @@ def part3():
         ''' perform the combined warp with bilinear interpolation (just show image) '''
         # TODO: implement combined warp -- you can use skimage.trasnform functions for this part (import if needed)
         # (you may want to use the above functions (above combined) to get the combined transformation matrix)
+        h, w = image.shape[:2]
+        #print(h,w)
+        
         out_img = np.zeros_like(image)
-
+        warp_image,Tc = combined_warp(image)
+        
+        Tc_inv = np.linalg.inv(Tc)[:, :2]
+        print(Tc_inv)
+        
+        out_img = warp(image,Tc_inv,order = 1)
+        
         return out_img
 
 
