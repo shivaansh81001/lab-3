@@ -242,7 +242,7 @@ def part3():
         ''' rotate and return image '''
         h, w = image.shape[:2]
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
-        angle = 75
+        angle = -75
         angle_rad = np.radians(angle)
         Tr = np.array([[np.cos(angle_rad), -np.sin(angle_rad), 0],
                        [np.sin(angle_rad), np.cos(angle_rad), 0],
@@ -255,7 +255,7 @@ def part3():
         combined_Tr_trans = np.matmul(Tr, trans_mat_inv)    
         combined_inverses = np.matmul(trans_mat, Tr_inv)
         '''
-        combined = trans_mat_inv@Tr@trans_mat
+        combined = trans_mat_inv@Tr_inv@trans_mat
         
         out_img = np.zeros_like(image)
         for out_y in range(h):
@@ -279,6 +279,7 @@ def part3():
         ''' scale image and return '''
         # TODO: implement this function, similar to above
         h, w = image.shape[:2]
+        #print(h,w)
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
         
         out_img = np.zeros_like(image)
@@ -289,13 +290,13 @@ def part3():
         Ts = np.array([[scale_x, 0, 0],
                        [0, scale_y, 0],
                        [0, 0, 1]])
+        Ts_inv = np.linalg.inv(Ts)
+        #print(trans_mat, Ts, trans_mat_inv)
         
-        print(trans_mat, Ts, trans_mat_inv)
+        combined = trans_mat_inv@Ts_inv@trans_mat
         
-        combined = trans_mat_inv@Ts@trans_mat
-        
-        for out_y in range(int(h*scale_y)):
-            for out_x in range(int(w*scale_x)):
+        for out_y in range(h):
+            for out_x in range(w):
                 out =  combined@np.array([[out_x],[out_y],[1]])
                 in_x, in_y = int(round(out[0, 0])), int(round(out[1, 0]))
                 if 0 <= in_x < w and 0 <= in_y < h:
