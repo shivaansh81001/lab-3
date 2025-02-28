@@ -374,22 +374,18 @@ def part3():
         ''' perform the combined warp with bilinear interpolation (just show image) '''
         # TODO: implement combined warp -- you can use skimage.trasnform functions for this part (import if needed)
         # (you may want to use the above functions (above combined) to get the combined transformation matrix)
-        h, w = image.shape[:2]
-        #print(h,w)
-        image = image.astype(np.float32) / 255.0 if image.dtype == np.uint8 else image
         trans_mat, trans_mat_inv = calculate_trans_mat(image)
         
         out_img = np.zeros_like(image)
-        warp_image,Tc = combined_warp(image)
+        _,Tc = combined_warp(image)
         
         Tc_inv = np.linalg.inv(Tc)
-        #Tc_inv = np.array([Tc_inv for i in range(3)])
-        print(Tc_inv)
+        #print(Tc_inv)
 
         combined = trans_mat_inv@Tc_inv@trans_mat
         
         out_img = np.uint8(warp(image,inverse_map = combined,order = 1)*255)
-        print(out_img)
+        #print(out_img)
         
         return out_img
 
