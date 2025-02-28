@@ -436,11 +436,21 @@ def part4():
 
     # TODO: Initiate ORB detector
     from skimage.feature import ORB, match_descriptors
-    # ...
 
-    # TODO: Find the keypoints and descriptors
-    # ...
+    #reference = https://scikit-image.org/docs/stable/auto_examples/features_detection/plot_orb.html#sphx-glr-auto-examples-features-detection-plot-orb-py
+    extractor = ORB(n_keypoints=100)
+    
+    extractor.detect_and_extract(image0)
+    keypoints1 = extractor.keypoints
+    descriptor_1 = extractor.descriptors
 
+    extractor.detect_and_extract(image1)
+    keypoints2 = extractor.keypoints
+    descriptor_2 = extractor.descriptors
+
+    matches12 = match_descriptors(descriptor_1,descriptor_2,cross_check=True, max_distance = 500)
+
+    print(matches12)
     # TODO: initialize Brute-Force matcher and exclude outliers. See match descriptor function.
     # ...
 
@@ -450,7 +460,7 @@ def part4():
     from skimage.measure import ransac
     from skimage.transform import ProjectiveTransform
     # ...
-    # model_robust, inliers = ransac ...
+    model_robust, inliers = ransac(matches12, ProjectiveTransform)
 
     # ------------- Warping ----------------
     #Next, we produce the panorama itself. The first step is to find the shape of the output image by considering the extents of all warped images.
@@ -464,7 +474,7 @@ def part4():
                         [0, r],
                         [c, 0],
                         [c, r]])
-
+    
     # Warp the image corners to their new positions.
     warped_corners = model_robust(corners)
 
@@ -552,9 +562,9 @@ if __name__ == "__main__":
     
     #print("***************Output for part 2:")
     #part2()
-    
+    '''
     print("***************Output for part 3:")
     part3()
     '''
     print("***************Output for part 4:")
-    part4()'''
+    part4()
