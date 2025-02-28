@@ -342,8 +342,30 @@ def part3():
         # TODO: implement combined warp on your own.
         # You need to combine the transformation matrices before performing the warp
         # (you may want to use the above functions to get the transformation matrices)
+        h, w = image.shape[:2]
+        #print(h,w)
+        trans_mat, trans_mat_inv = calculate_trans_mat(image)
+        
         out_img = np.zeros_like(image)
-        Tc = np.array([])
+        
+        rotate, Tr = rotate_image(image)
+        scale,Ts = scale_image(image)
+        skew, Tskew = skew_image(image)
+        
+        print(rotate.shape,scale.shape,skew.shape)
+        
+        Tc = np.array(Ts@Tr@Tskew)
+        
+        Tc_inv = np.linalg.inv(Tc)
+        
+        combined = trans_mat_inv@Tc_inv@trans_mat
+        
+        for out_y in range(h):
+            for out_x in range(w):
+                out =  combined@np.array([[out_x],[out_y],[1]])
+                in_x, in_y = int(round(out[0, 0])), int(round(out[1, 0]))
+                if 0 <= in_x < w and 0 <= in_y < h:
+                   out_img[out_y, out_x] = image[in_y, in_x]
 
         return out_img, Tc
 
