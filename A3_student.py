@@ -438,7 +438,7 @@ def part4():
     from skimage.feature import ORB, match_descriptors
 
     #reference = https://scikit-image.org/docs/stable/auto_examples/features_detection/plot_orb.html#sphx-glr-auto-examples-features-detection-plot-orb-py
-    extractor = ORB(n_keypoints=100)
+    extractor = ORB(n_keypoints=500, fast_threshold=0.05)
     
     extractor.detect_and_extract(image0)
     keypoints1 = extractor.keypoints
@@ -448,9 +448,9 @@ def part4():
     keypoints2 = extractor.keypoints
     descriptor_2 = extractor.descriptors
 
-    matches12 = match_descriptors(descriptor_1,descriptor_2,cross_check=True, max_distance = 500)
+    matches12 = match_descriptors(descriptor_1, descriptor_2, cross_check=True)
 
-    print(matches12)
+    print(matches12.shape)
     # TODO: initialize Brute-Force matcher and exclude outliers. See match descriptor function.
     # ...
 
@@ -459,8 +459,14 @@ def part4():
     # TODO: Compute homography matrix using ransac and ProjectiveTransform
     from skimage.measure import ransac
     from skimage.transform import ProjectiveTransform
-    # ...
-    model_robust, inliers = ransac(matches12, ProjectiveTransform)
+
+    src,dst = np.array(keypoints1[matches12[:, 0]]), np.array(keypoints2[matches12[:, 1]])
+
+    model = ProjectiveTransform()
+    model.estimate(src,dst)
+
+    print(src)
+    model_robust, inliers = ransac((src,dst), ProjectiveTransform, min_samples=4, residual_threshold=4,max_trials=10000)
 
     # ------------- Warping ----------------
     #Next, we produce the panorama itself. The first step is to find the shape of the output image by considering the extents of all warped images.
@@ -517,10 +523,19 @@ def part4():
         return np.dstack((rgb, alpha))
 
     # TODO: add alpha to the image0 and image1
-    # ...
+    image0 = add_alpha(image0)
+    image1 = add_alpha(image1)
+
+    min_shape = (
+    min(image0.shape[0], image1.shape[0]),
+    min(image0.shape[1], image1.shape[1]))
+
+    image0 = image0[:min_shape[0], :min_shape[1], :]
+    image1 = image1[:min_shape[0], :min_shape[1], :]
 
     # TODO: merge the alpha added image (only change the next line)
-    # merged = ...
+    merged = image1+image0
+
     alpha = merged[..., 3]
     merged /= np.maximum(alpha, 1)[..., np.newaxis]
     # The summed alpha layers give us an indication of
