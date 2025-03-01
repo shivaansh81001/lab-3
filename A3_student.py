@@ -533,10 +533,10 @@ def part4():
     image0 = image0[:min_shape[0], :min_shape[1], :]
     image1 = image1[:min_shape[0], :min_shape[1], :]
 
-    image0[:, :, 3] = image0[:, :, 3]//2
-    image1[:, :, 3] = image1[:, :, 3]//2
+    image0[...,:3]*=0.75
+    image1[...,:3]*=0.75
     # TODO: merge the alpha added image (only change the next line)
-    merged = np.maximum(image0,image1)
+    merged = np.clip(image1+image0,0,255)
 
     alpha = merged[..., 3]
     merged /= np.maximum(alpha, 1)[..., np.newaxis]
@@ -574,14 +574,14 @@ def part4():
 
 if __name__ == "__main__":
     # You can comment those lines to run only part of the code you are working on but remember to uncomment before submission
-    #print("***************Output for part 1:")
-    #part1()
+    print("***************Output for part 1:")
+    part1()
     
-    #print("***************Output for part 2:")
-    #part2()
-    '''
+    print("***************Output for part 2:")
+    part2()
+    
     print("***************Output for part 3:")
     part3()
-    '''
+    
     print("***************Output for part 4:")
     part4()
